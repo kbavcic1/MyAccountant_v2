@@ -1,60 +1,84 @@
 package ba.unsa.etf.myaccountant_v2;
 
+import android.os.Bundle;
+import android.widget.CalendarView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CalendarView;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    CalendarView calendarView;
+    List<CalendarEvent> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        CalendarView calendarView = (CalendarView) findViewById(R.id.calendar_view);
+        calendarView = (CalendarView) findViewById(R.id.calendarView);
 
-        // Set a listener to switch to the day view when a specific date is selected
+        // Initialize the list of events
+        events = new ArrayList<>();
+
+        // Add some sample events
+        Calendar startTime1 = Calendar.getInstance();
+        startTime1.set(Calendar.HOUR_OF_DAY, 9);
+        startTime1.set(Calendar.MINUTE, 0);
+        Calendar endTime1 = Calendar.getInstance();
+        endTime1.set(Calendar.HOUR_OF_DAY, 10);
+        endTime1.set(Calendar.MINUTE, 0);
+        events.add(new CalendarEvent("Meeting with Bob", startTime1, endTime1));
+
+        Calendar startTime2 = Calendar.getInstance();
+        startTime2.set(Calendar.HOUR_OF_DAY, 14);
+        startTime2.set(Calendar.MINUTE, 0);
+        Calendar endTime2 = Calendar.getInstance();
+        endTime2.set(Calendar.HOUR_OF_DAY, 15);
+        endTime2.set(Calendar.MINUTE, 0);
+        events.add(new CalendarEvent("Lunch with Alice", startTime2, endTime2));
+
+        // Set an OnDateChangeListener to display the list of events for the selected date
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                // Switch to the day view
-                showDayView(year, month, dayOfMonth);
+            public void onSelectedDayChange(CalendarView CalendarView, int year, int month, int dayOfMonth) {
+                List<String> eventTitles = new ArrayList<>();
+                for (CalendarEvent event : events) {
+                    Calendar startTime = event.getStartTime();
+                    if (startTime.get(Calendar.YEAR) == year && startTime.get(Calendar.MONTH) == month && startTime.get(Calendar.DAY_OF_MONTH) == dayOfMonth) {
+                        eventTitles.add(event.getTitle());
+                    }
+                }
+                Toast.makeText(getApplicationContext(), eventTitles.toString(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+}
 
-        // Set a listener to switch to the week view when the user scrolls to a different week
-        calendarView.setOnScrollListener(new CalendarView.OnScrollListener() {
-            @Override
-            public void onScroll(CalendarView view, int year, int month, int dayOfMonth) {
-                // Switch to the week view
-                showWeekView(year, month, dayOfMonth);
-            }
-        });
+// CalendarEvent class to represent events in the calendar
+class CalendarEvent {
+    private String title;
+    private Calendar startTime;
+    private Calendar endTime;
 
-        // Set a listener to switch to the month view when the user clicks the "Month" button
-        Button monthButton = (Button) findViewById(R.id.month_button);
-        monthButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Switch to the month view
-                showMonthView();
-            }
-        });
-
-        // Set a listener to switch to the year view when the user clicks the "Year" button
-        Button yearButton = (Button) findViewById(R.id.year_button);
-        yearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Switch to the year view
-                showYearView();
-            }
-        });
-
+    public CalendarEvent(String title, Calendar startTime, Calendar endTime) {
+        this.title = title;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public Calendar getStartTime() {
+        return startTime;
+    }
+
+    public Calendar getEndTime() {
+        return endTime;
+    }
 }
