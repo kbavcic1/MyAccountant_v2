@@ -1,6 +1,9 @@
 package ba.unsa.etf.myaccountant_v2;
 
+import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.widget.CalendarView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,9 +12,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
 
-    CalendarView calendarView;
+    EventCalendarView calendarView;
     List<CalendarEvent> events;
 
     @Override
@@ -19,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        calendarView = (CalendarView) findViewById(R.id.calendarView);
+        calendarView = (EventCalendarView) findViewById(R.id.calendarView);
 
         // Initialize the list of events
         events = new ArrayList<>();
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         endTime2.set(Calendar.MINUTE, 0);
         events.add(new CalendarEvent("Lunch with Alice", startTime2, endTime2));
 
+        calendarView.setEvents(events);
         // Set an OnDateChangeListener to display the list of events for the selected date
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
